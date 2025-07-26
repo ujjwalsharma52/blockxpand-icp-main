@@ -1,0 +1,17 @@
+[[pool]]
+id = "pool1"
+token_a = "ICP"
+token_b = "XTC"
+decimals_a = 8
+decimals_b = 8
+image_a = "https://example.com/icp.png"
+image_b = "https://example.com/xtc.png"
+
+[[pool]]
+id = "pool2"
+token_a = "ICP"
+token_b = "XYZ"
+decimals_a = 8
+decimals_b = 8
+image_a = "https://example.com/icp.png"
+image_b = "https://example.com/xyz.png"

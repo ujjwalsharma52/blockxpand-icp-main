@@ -1,0 +1,9 @@
+type Account = record { owner: principal; subaccount: opt vec nat8 };
+type Position = record { ledger: principal; subaccount: vec nat8 };
+service : {
+  "get_user_positions": (principal) -> (vec Position) query;
+  "icrc1_metadata": () -> (vec record { text; variant { Text: text; Nat8: nat8 } }) query;
+  "icrc1_balance_of": (Account) -> (nat) query;
+  "block_height": () -> (nat64) query;
+  "advance_block": () -> ();
+};

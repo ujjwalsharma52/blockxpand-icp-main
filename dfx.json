@@ -1,0 +1,56 @@
+{
+  "dfx": "0.20.1",
+  "canisters": {
+    "aggregator": {
+      "type": "custom",
+      "candid": "candid/aggregator.did",
+      "wasm": "target/wasm32-unknown-unknown/release/aggregator_canister.wasm",
+      "build": "cargo build --quiet --target wasm32-unknown-unknown --release -p aggregator_canister",
+      "metadata": [
+        { "name": "candid:service" }
+      ]
+    },
+    "mock_ledger": {
+      "type": "custom",
+      "candid": "candid/mock_ledger.did",
+      "wasm": "target/wasm32-unknown-unknown/release/mock_ledger_canister.wasm",
+      "build": "cargo build --quiet --target wasm32-unknown-unknown --release -p mock_ledger_canister",
+      "metadata": [
+        { "name": "candid:service" }
+      ]
+    },
+    "mock_icpswap": {
+      "type": "custom",
+      "candid": "candid/mock_icpswap.did",
+      "wasm": "target/wasm32-unknown-unknown/release/mock_icpswap_canister.wasm",
+      "build": "cargo build --quiet --target wasm32-unknown-unknown --release -p mock_icpswap_canister",
+      "metadata": [
+        { "name": "candid:service" }
+      ]
+    },
+    "mock_sonic": {
+      "type": "custom",
+      "candid": "candid/mock_sonic.did",
+      "wasm": "target/wasm32-unknown-unknown/release/mock_sonic_canister.wasm",
+      "build": "cargo build --quiet --target wasm32-unknown-unknown --release -p mock_sonic_canister",
+      "metadata": [
+        { "name": "candid:service" }
+      ]
+    },
+    "mock_infinity": {
+      "type": "custom",
+      "candid": "candid/mock_infinity.did",
+      "wasm": "target/wasm32-unknown-unknown/release/mock_infinity_canister.wasm",
+      "build": "cargo build --quiet --target wasm32-unknown-unknown --release -p mock_infinity_canister",
+      "metadata": [
+        { "name": "candid:service" }
+      ]
+    }
+  },
+  "networks": {
+    "local": {"bind": "127.0.0.1:4943", "type": "ephemeral"},
+    "ci-test": {"type": "ephemeral"}
+  },
+  "defaults": {"build": {"packtool": ""}},
+  "version": 1
+}

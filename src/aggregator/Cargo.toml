@@ -1,0 +1,46 @@
+[package]
+name = "aggregator"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+async-trait = { workspace = true }
+candid = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+ic-cdk = { workspace = true }
+ic-cdk-macros = { workspace = true }
+futures = { workspace = true }
+once_cell = { workspace = true }
+serial_test = "2"
+bx_core = { path = "../bx_core" }
+dashmap = "5"
+toml = "0.8"
+num-bigint = "0.4"
+num-traits = "0.2"
+num-integer = "0.1"
+sha2 = "0.10"
+ic-cdk-timers = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+notify = { workspace = true }
+serde_cbor = "0.11"
+ic-certified-map = "0.4"
+serde_bytes = "0.11"
+
+[dev-dependencies]
+quickcheck = "1"
+quickcheck_macros = "1"
+tokio = { workspace = true }
+once_cell = { workspace = true }
+tempfile = "3"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+tokio = { workspace = true }
+ic-agent = { workspace = true }
+notify = { workspace = true }
+
+[features]
+live-test = []
+claim = []
+

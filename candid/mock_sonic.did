@@ -1,0 +1,16 @@
+type Token = record { address: text; decimals: nat8 };
+type PositionInfo = record {
+  token_a: Token;
+  token_b: Token;
+  token_a_amount: nat;
+  token_b_amount: nat;
+  reward_token: Token;
+  reward_amount: nat;
+  auto_compound: bool;
+};
+service : {
+  "get_user_positions": (principal) -> (vec PositionInfo) query;
+  "block_height": () -> (nat64) query;
+  "advance_block": () -> ();
+  "claim": (principal, principal) -> (nat64);
+};

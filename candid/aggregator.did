@@ -1,0 +1,28 @@
+type Holding = record {
+  source: text;
+  token: text;
+  amount: text;
+  status: text;
+};
+
+service: {
+  "get_holdings": (principal) -> (vec Holding) query;
+  "claim_all_rewards": (principal) -> (vec nat64);
+  "refresh_holdings": (principal) -> (); 
+  "get_holdings_cert": (principal) -> (record {
+    holdings: vec Holding;
+    certificate: blob;
+    witness: blob;
+  }) query;
+  "pools_graphql": (text) -> (text) query;
+  "get_version": () -> (record {
+    git_sha: text;
+    build_time: text;
+  }) query;
+  "get_metrics": () -> (record {
+    cycles: nat64;
+    query_count: nat64;
+    heartbeat_count: nat64;
+    last_heartbeat: nat64;
+  }) query;
+};

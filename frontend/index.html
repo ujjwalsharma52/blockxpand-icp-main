@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>BlockXpand Rewards</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            background: #fff;
+            color: #222;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        main {
+            width: 100%;
+            max-width: 640px;
+            text-align: center;
+        }
+
+        button {
+            padding: 0.5em 1.5em;
+            margin: 0.5em;
+            background: #000;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: default;
+        }
+
+        table {
+            margin: 1em 0;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            padding: 0.5em;
+            border: 1px solid #000;
+        }
+
+        thead {
+            background: #000;
+            color: #fff;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f5f5f5;
+        }
+
+        #status {
+            margin-top: 1em;
+            font-weight: bold;
+        }
+    </style>
+    <script type="module">
+        import { HttpAgent, Actor } from "https://unpkg.com/@dfinity/agent@1.1.1?module";
+        import { AuthClient } from "https://unpkg.com/@dfinity/auth-client@1.1.1?module";
+
+        const canisterId = "<CANISTER_ID>"; // replace with aggregator canister ID
+        const idlFactory = ({IDL}) => IDL.Service({
+            get_holdings: IDL.Func([IDL.Principal], [IDL.Vec(
+                IDL.Record({
+                    source: IDL.Text,
+                    token: IDL.Text,
+                    amount: IDL.Text,
+                    status: IDL.Text,
+                })
+            )], ["query"]),
+            claim_all_rewards: IDL.Func([IDL.Principal], [IDL.Vec(IDL.Nat64)], [])
+        });
+
+        let authClient;
+        let actor;
+        function setStatus(msg, isError = false) {
+            const el = document.getElementById("status");
+            el.style.color = isError ? "red" : "green";
+            el.textContent = msg;
+        }
+        async function init() {
+            authClient = await AuthClient.create();
+            if (await authClient.isAuthenticated()) {
+                await onConnect();
+            }
+        }
+
+        async function connect() {
+            await authClient.login({
+                identityProvider: "https://identity.ic0.app/#authorize",
+                onSuccess: onConnect,
+            });
+        }
+
+        async function onConnect() {
+            const identity = await authClient.getIdentity();
+            const agent = new HttpAgent({ identity });
+            actor = Actor.createActor(idlFactory, { agent, canisterId });
+            document.getElementById("principal").textContent = identity.getPrincipal().toText();
+            document.getElementById("claimBtn").disabled = false;
+            await fetchHoldings();
+        }
+
+        async function claim() {
+            setStatus("");
+            try {
+                const principal = actor.agent.identity.getPrincipal();
+                const spent = await actor.claim_all_rewards(principal);
+                setStatus("Spent: " + spent.join(", "));
+                await fetchHoldings();
+            } catch (err) {
+                setStatus(err.message || err, true);
+            }
+        }
+
+        async function fetchHoldings() {
+            setStatus("");
+            try {
+                const principal = actor.agent.identity.getPrincipal();
+                const holdings = await actor.get_holdings(principal);
+                const tbody = document.querySelector("#holdings tbody");
+                tbody.innerHTML = "";
+                const totals = {};
+                holdings.forEach(h => {
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `<td>${h.source}</td><td>${h.token}</td><td>${h.amount}</td>`;
+                    tbody.appendChild(tr);
+                    const val = parseFloat(h.amount);
+                    if (!isNaN(val)) {
+                        totals[h.token] = (totals[h.token] || 0) + val;
+                    }
+                });
+                const summary = document.querySelector("#summary tbody");
+                summary.innerHTML = "";
+                Object.entries(totals).forEach(([token, amt]) => {
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `<td>${token}</td><td>${amt.toFixed(4)}</td>`;
+                    summary.appendChild(tr);
+                });
+                if (holdings.length === 0) {
+                    setStatus("No rewards available");
+                }
+            } catch (err) {
+                setStatus(err.message || err, true);
+            }
+        }
+
+        window.connect = connect;
+        window.claim = claim;
+        window.fetchHoldings = fetchHoldings;
+        init();
+    </script>
+</head>
+<body>
+    <main>
+        <h1>BlockXpand Rewards</h1>
+        <p>Principal: <span id="principal">not connected</span></p>
+        <button onclick="connect()">Connect Wallet</button>
+        <button id="claimBtn" onclick="claim()" disabled>Claim Rewards</button>
+        <table id="holdings">
+            <thead>
+                <tr><th>Source</th><th>Token</th><th>Amount</th></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <h3>Summary</h3>
+        <table id="summary">
+            <thead><tr><th>Token</th><th>Total</th></tr></thead>
+            <tbody></tbody>
+        </table>
+        <p id="status"></p>
+    </main>
+</body>
+</html>

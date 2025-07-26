@@ -1,0 +1,16 @@
+[ledgers]
+ICP = "rwlgt-iiaaa-aaaaa-aaaaa-cai"
+
+[dex]
+# Fallback SNS canister IDs used when environment variables are not set.
+# These are queried by the DEX adapters during local development.
+ICPSWAP_FACTORY = "oh4fn-kyaaa-aaaaq-aaega-cai"
+SONIC_ROUTER = "xjngq-yaaaa-aaaaq-aabha-cai"
+INFINITY_VAULT = "pnthx-iiaaa-aaaaq-aaeba-cai"
+SNS_DISTRIBUTOR = "rkp4c-7iaaa-aaaaa-aaaca-cai"
+
+[dex_controllers]
+ICPSWAP_FACTORY = "aaaaa-aa"
+SONIC_ROUTER = "aaaaa-aa"
+INFINITY_VAULT = "aaaaa-aa"
+SNS_DISTRIBUTOR = "aaaaa-aa"

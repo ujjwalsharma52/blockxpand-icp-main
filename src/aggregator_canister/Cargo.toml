@@ -1,0 +1,23 @@
+[package]
+name = "aggregator_canister"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+
+[dependencies]
+aggregator = { path = "../aggregator" }
+ic-cdk = { workspace = true }
+ic-cdk-macros = { workspace = true }
+candid = { workspace = true }
+
+[features]
+export_candid = ["ic-cdk/wasi"]
+claim = ["aggregator/claim"]
+
+[lib]
+crate-type = ["cdylib"]
+test = false
+doctest = false
+
+[build-dependencies]
+chrono = { workspace = true }

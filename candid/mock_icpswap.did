@@ -1,0 +1,12 @@
+type Token = record { address: text; standard: text };
+type PoolData = record { key: text; token0: Token; token1: Token; fee: nat; tickSpacing: int; canister_id: principal };
+type UserPositionInfoWithTokenAmount = record { id: nat; token0_amount: nat; token1_amount: nat };
+type PoolMetadata = record { token0_decimals: nat8; token1_decimals: nat8 };
+service : {
+  "get_user_positions_by_principal": (principal) -> (vec UserPositionInfoWithTokenAmount) query;
+  "metadata": () -> (PoolMetadata) query;
+  "get_pools": () -> (vec PoolData) query;
+  "block_height": () -> (nat64) query;
+  "advance_block": () -> ();
+  "claim": (principal, principal) -> (nat64);
+};
